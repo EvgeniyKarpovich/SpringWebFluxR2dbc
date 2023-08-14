@@ -2,6 +2,7 @@ package by.karpovich.Crypto.api.clientController;
 
 import by.karpovich.Crypto.api.dto.crypto.CoinListResponse;
 import by.karpovich.Crypto.api.dto.crypto.CoinResult;
+import by.karpovich.Crypto.jpa.entity.CryptoEntity;
 import by.karpovich.Crypto.service.CryptoServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -29,7 +30,7 @@ public class CryptoController {
 //    }
 
     @GetMapping(value = "/test", produces = MediaType.APPLICATION_NDJSON_VALUE)
-    public Flux<CoinResult> cryptoEntity() {
+    public Flux<CryptoEntity> cryptoEntity() {
         return cryptoService.test();
     }
 
