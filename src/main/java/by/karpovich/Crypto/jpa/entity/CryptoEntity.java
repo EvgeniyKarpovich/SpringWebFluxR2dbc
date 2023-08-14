@@ -1,13 +1,9 @@
 package by.karpovich.Crypto.jpa.entity;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
-import java.time.Instant;
 
 @Getter
 @Setter
@@ -35,8 +31,4 @@ public class CryptoEntity {
     private String percentChange1h;
     @Column
     private String percentChange7d;
-    @Column
-    private Instant dateOfCreation;
-    @Column
-    private Instant dateOfChange;
 }
