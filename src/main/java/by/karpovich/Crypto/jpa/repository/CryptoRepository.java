@@ -17,5 +17,5 @@ public interface CryptoRepository extends R2dbcRepository<CryptoEntity, Long> {
 //    @Query("SELECT MAX(idFromCoinLore) FROM CryptoEntity")
 //    String findMaxIdFromCoinLoreFromCryptoEntity();
 //
-//    Optional<CryptoEntity> findByIdFromCoinLore(String id);
+    Optional<CryptoEntity> findByIdFromCoinLore(String id);
 }

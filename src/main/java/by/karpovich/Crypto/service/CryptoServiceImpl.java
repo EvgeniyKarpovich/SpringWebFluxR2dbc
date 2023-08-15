@@ -1,5 +1,6 @@
 package by.karpovich.Crypto.service;
 
+import by.karpovich.Crypto.api.dto.crypto.CoinDto;
 import by.karpovich.Crypto.api.dto.crypto.CoinListResponse;
 import by.karpovich.Crypto.jpa.entity.CryptoEntity;
 import by.karpovich.Crypto.jpa.repository.CryptoRepository;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 
 @Slf4j
@@ -129,33 +133,53 @@ public class CryptoServiceImpl {
 //        }
 //    }
 
-    public Flux<CoinListResponse> test1() {
+    //    @Transactional
+//    public Flux<CryptoEntity> test() {
+//        WebClient client = WebClient.create("https://api.coinlore.net");
+//
+//      return client.get()
+//                .uri("/api/tickers/?start=100&limit=100")
+//                .retrieve()
+//                .bodyToFlux(CoinListResponse.class)
+//                .flatMap(response ->
+//                        cryptoRepository.saveAll(cryptoMapper.mapListEntityFromListCoinDto(response.getData())))
+//                .onErrorResume(error -> {
+//                    throw new RuntimeException("aaa");
+//                });
+//    }
+
+    public Flux<CryptoEntity> saveAllCryptoEntities() {
+        int start = 0;
+        int limit = 100;
+
         WebClient client = WebClient.create("https://api.coinlore.net");
 
-        return client.get()
-                .uri("/api/tickers/?start=100&limit=100")
-                .retrieve()
-                .bodyToFlux(CoinListResponse.class);
+        return saveCryptoEntitiesRecursive(start, limit, client);
     }
 
     @Transactional
-    public Flux<CryptoEntity> test() {
-        WebClient client = WebClient.create("https://api.coinlore.net");
+    private Flux<CryptoEntity> saveCryptoEntitiesRecursive(int start, int limit, WebClient client) {
 
-      return client.get()
-                .uri("/api/tickers/?start=100&limit=100")
+        String format = String.format("/api/tickers/?start=%d&limit=%d", start, limit);
+        return client.get()
+                .uri(format)
                 .retrieve()
                 .bodyToFlux(CoinListResponse.class)
-                .flatMap(response -> cryptoRepository.saveAll(cryptoMapper.mapListEntityFromListCoinDto(response.getData())))
+                .flatMap(response -> {
+                    List<CoinDto> data = response.getData();
+                    if (data.isEmpty()) {
+                        return Flux.empty(); // Нет новых данных, остановка рекурсии
+                    }
+
+                    Flux<CryptoEntity> savedEntities = cryptoRepository.saveAll(cryptoMapper.mapListEntityFromListCoinDto(data));
+                    int nextStart = start + limit;
+                    return savedEntities.concatWith(saveCryptoEntitiesRecursive(nextStart, limit, client));
+                })
                 .onErrorResume(error -> {
-                    throw new RuntimeException("aaa");
+                    throw new RuntimeException("Ошибка при сохранении сущностей");
                 });
     }
 
-    @Transactional
-    public Flux<CryptoEntity> saveAll(Flux<CryptoEntity> entities) {
-        return cryptoRepository.saveAll(entities);
-    }
 
 //    private String sendGetRequest(OkHttpClient client, String url) {
 //        Request request = new Request.Builder()
