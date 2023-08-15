@@ -1,5 +1,7 @@
 package by.karpovich.Crypto.api.dto.crypto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
@@ -9,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CoinDto {
 
     @SerializedName("id")
@@ -38,21 +41,21 @@ public class CoinDto {
     @SerializedName("percent_change_7d")
     @Expose
     private String percentChange7d;
+    @SerializedName("price_btc")
+    @Expose
+    private String priceBtc;
     @SerializedName("market_cap_usd")
     @Expose
     private String marketCapUsd;
     @SerializedName("volume24")
     @Expose
     private String volume24;
-    @SerializedName("volume24_native")
+    @SerializedName("volume24a")
     @Expose
-    private String volume24Native;
+    private String volume24a;
     @SerializedName("csupply")
     @Expose
     private String csupply;
-    @SerializedName("price_btc")
-    @Expose
-    private String priceBtc;
     @SerializedName("tsupply")
     @Expose
     private String tsupply;
@@ -63,7 +66,7 @@ public class CoinDto {
     public CoinDto() {
     }
 
-    public CoinDto(String id, String symbol, String name, String nameid, Integer rank, String priceUsd, String percentChange24h, String percentChange1h, String percentChange7d, String marketCapUsd, String volume24, String volume24Native, String csupply, String priceBtc, String tsupply, String msupply) {
+    public CoinDto(String id, String symbol, String name, String nameid, Integer rank, String priceUsd, String percentChange24h, String percentChange1h, String percentChange7d, String marketCapUsd, String volume24, String volume24a, String csupply, String priceBtc, String tsupply, String msupply) {
         this.id = id;
         this.symbol = symbol;
         this.name = name;
@@ -75,7 +78,7 @@ public class CoinDto {
         this.percentChange7d = percentChange7d;
         this.marketCapUsd = marketCapUsd;
         this.volume24 = volume24;
-        this.volume24Native = volume24Native;
+        this.volume24a = volume24a;
         this.csupply = csupply;
         this.priceBtc = priceBtc;
         this.tsupply = tsupply;

@@ -1,5 +1,7 @@
 package by.karpovich.Crypto.api.dto.crypto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
@@ -10,16 +12,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CoinResult {
 
-    @SerializedName("id")
-    @Expose
     public String id;
-    @SerializedName("symbol")
-    @Expose
     public String symbol;
-    @SerializedName("name")
-    @Expose
     public String name;
     @SerializedName("nameid")
     @Expose

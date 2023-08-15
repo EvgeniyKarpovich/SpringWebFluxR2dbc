@@ -5,8 +5,10 @@ import by.karpovich.Crypto.api.dto.crypto.CoinResult;
 import by.karpovich.Crypto.jpa.entity.CryptoEntity;
 import by.karpovich.Crypto.service.CryptoServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
@@ -29,9 +31,9 @@ public class CryptoController {
 //        cryptoService.updateCoins();
 //    }
 
-    @GetMapping(value = "/test", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    @PostMapping(value = "/test"/*, produces = MediaType.APPLICATION_NDJSON_VALUE*/)
     public Flux<CryptoEntity> cryptoEntity() {
-        return cryptoService.test();
+       return   cryptoService.test();
     }
 
     @GetMapping(value = "/test1", produces = MediaType.APPLICATION_NDJSON_VALUE)

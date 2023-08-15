@@ -1,7 +1,6 @@
 package by.karpovich.Crypto.service;
 
 import by.karpovich.Crypto.api.dto.crypto.CoinListResponse;
-import by.karpovich.Crypto.api.dto.crypto.CoinResult;
 import by.karpovich.Crypto.jpa.entity.CryptoEntity;
 import by.karpovich.Crypto.jpa.repository.CryptoRepository;
 import by.karpovich.Crypto.mapping.CryptoMapper;
@@ -139,28 +138,19 @@ public class CryptoServiceImpl {
                 .bodyToFlux(CoinListResponse.class);
     }
 
+    @Transactional
     public Flux<CryptoEntity> test() {
         WebClient client = WebClient.create("https://api.coinlore.net");
 
-        return client.get()
-                .uri("/api/ticker/?id=90")
+      return client.get()
+                .uri("/api/tickers/?start=100&limit=100")
                 .retrieve()
-                .bodyToFlux(CoinResult.class)
-                .flatMap(result -> {
-                    CryptoEntity entity = CryptoEntity.builder()
-                            .idFromCoinLore(result.getId())
-                            .name(result.getName())
-                            .symbol(result.getSymbol())
-                            .rank(result.getRank())
-                            .priceInUSD(result.getPriceUsd())
-                            .percentChange24h(result.getPercentChange24h())
-                            .percentChange1h(result.getPercentChange1h())
-                            .percentChange7d(result.getPercentChange7d())
-                            .build();
-                    return saveAll(Flux.just(entity));
+                .bodyToFlux(CoinListResponse.class)
+                .flatMap(response -> cryptoRepository.saveAll(cryptoMapper.mapListEntityFromListCoinDto(response.getData())))
+                .onErrorResume(error -> {
+                    throw new RuntimeException("aaa");
                 });
     }
-
 
     @Transactional
     public Flux<CryptoEntity> saveAll(Flux<CryptoEntity> entities) {
